@@ -1,0 +1,94 @@
+"""
+Author: Kivanc Corut
+A Snakemake workflow to process RNA-Seq data.
+"""
+
+sample_id, run_id = glob_wildcards("/work/jawlab/kivanc/PeanutRnaSeq/data/fastq/{smp}_R{run}.fastq.gz")
+
+rule all:
+    input:
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R1_fastqc.html", smp=sample_id),
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R2_fastqc.html", smp=sample_id),
+        "/scratch/ac32082/PeanutRnaSeq/MultiQC/fastq_multiqc.html",
+        expand("/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R1.fastq.gz", smp=sample_id),
+        expand("/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R2.fastq.gz", smp=sample_id),
+        expand("/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R1.unpaired.fastq.gz", smp=sample_id),
+        expand("/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R2.unpaired.fastq.gz", smp=sample_id),
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R1_fastqc.html", smp=sample_id),
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R2_fastqc.html", smp=sample_id),
+        "/scratch/ac32082/PeanutRnaSeq/MultiQCTrim/fastq_trimmed_multiqc.html"
+rule fastqc:
+    input:
+        fwd="/work/jawlab/kivanc/PeanutRnaSeq/data/fastq/{smp}_R1.fastq.gz",
+        rev="/work/jawlab/kivanc/PeanutRnaSeq/data/fastq/{smp}_R2.fastq.gz"
+    output:
+        html_fwd="/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R1_fastqc.html",
+        zip_fwd="/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R1_fastqc.zip",
+        html_rev="/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R2_fastqc.html",
+        zip_rev="/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R2_fastqc.zip"
+    threads:20
+    log:
+        log_fwd="/scratch/ac32082/PeanutRnaSeq/FastQC/logs/{smp}_R1.fastqc.log",
+        log_rev="/scratch/ac32082/PeanutRnaSeq/FastQC/logs/{smp}_R2.fastqc.log"
+    shell:
+        """
+        fastqc --outdir /scratch/ac32082/PeanutRnaSeq/FastQC -t {threads} -f fastq {input.fwd} {input.rev}
+        """
+
+rule multiqc:
+    input:
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R1_fastqc.html", smp=sample_id),
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQC/{smp}_R2_fastqc.html", smp=sample_id) 
+    output:
+        "/scratch/ac32082/PeanutRnaSeq/MultiQC/fastq_multiqc.html"
+    log:
+        "/scratch/ac32082/PeanutRnaSeq/MultiQC/logs/multiqc.log"
+    wrapper:
+        "0.35.0/bio/multiqc"
+
+rule trimmomaticPE:
+    input:
+        r1="/work/jawlab/kivanc/PeanutRnaSeq/data/fastq/{smp}_R1.fastq.gz",
+        r2="/work/jawlab/kivanc/PeanutRnaSeq/data/fastq/{smp}_R2.fastq.gz"
+    output:
+        r1="/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R1.fastq.gz",
+        r2="/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R2.fastq.gz",
+        r1_unpaired="/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R1.unpaired.fastq.gz",
+        r2_unpaired="/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R2.unpaired.fastq.gz"
+    log:
+        "/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/logs/{smp}.log"
+    threads:40
+    params:
+        trimmer=["ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads", "LEADING:3", "TRAILING:3", "SLIDINGWINDOW:4:15", "MINLEN:36"],
+        compression_level="-9"
+    wrapper:
+        "0.35.0/bio/trimmomatic/pe"
+
+rule fastqc_after:
+    input:
+        fwd_trim="/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R1.fastq.gz",
+        rev_trim="/work/jawlab/kivanc/PeanutRnaSeq/data/trimmed/{smp}_R2.fastq.gz"
+    output:
+        html_fwd_trim="/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R1_fastqc.html",
+        zip_fwd_trim="/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R1_fastqc.zip",
+        html_rev_trim="/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R2_fastqc.html",
+        zip_rev_trim="/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R2_fastqc.zip"
+    log:
+        log_fwd_trim="/scratch/ac32082/PeanutRnaSeq/FastQCTrim/logs/{smp}_R1_trim.fastqc.log",
+        log_rev_trim="/scratch/ac32082/PeanutRnaSeq/FastQCTrim/logs/{smp}_R2_trim.fastqc.log"
+    threads:40
+    shell:
+        """
+        fastqc -t {threads} {input.fwd_trim} {input.rev_trim} -q -f fastq -o /scratch/ac32082/PeanutRnaSeq/FastQCTrim
+        """
+
+rule multiqc_after:
+    input:
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R1_fastqc.html", smp=sample_id),
+        expand("/scratch/ac32082/PeanutRnaSeq/FastQCTrim/{smp}_R2_fastqc.html", smp=sample_id)
+    output:
+        "/scratch/ac32082/PeanutRnaSeq/MultiQCTrim/fastq_trimmed_multiqc.html"
+    log:
+        "/scratch/ac32082/PeanutRnaSeq/MultiQCTrim/logs/multiqc_trim.log"
+    wrapper:
+        "0.35.0/bio/multiqc" 
