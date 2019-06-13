@@ -1,4 +1,5 @@
 # SnakemakeRNASeq
 A Snakemake workflow to process paired-end RNA-Seq data.
 
-![](https://user-images.githubusercontent.com/42179487/59356599-2cec3880-8cf7-11e9-9b58-adbd402e25b4.png)
+![dag](https://user-images.githubusercontent.com/42179487/59395486-348cfb00-8d52-11e9-8add-1e03d978f23c.png)
+
