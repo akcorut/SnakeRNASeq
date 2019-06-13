@@ -2,7 +2,7 @@
 #PBS -q wallace_q 
 #PBS -N SnakemakeRnaSeq
 #PBS -l walltime=48:00:00
-#PBS -l nodes=1:ppn=40
+#PBS -l nodes=1:ppn=45
 #PBS -l mem=240gb
 
 #PBS -M ac32082@uga.edu
