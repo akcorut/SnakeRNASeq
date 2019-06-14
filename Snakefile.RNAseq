@@ -14,7 +14,8 @@ rule all:
         expand("/work/jawlab/kivanc/PeanutRnaSeq/data/cutadapt/{smp}_cutadapt_R2.fastq.gz", smp=sample_id),
         expand("/scratch/ac32082/PeanutRnaSeq/FastQCCut/{smp}_cutadapt_R1_fastqc.html", smp=sample_id),
         expand("/scratch/ac32082/PeanutRnaSeq/FastQCCut/{smp}_cutadapt_R2_fastqc.html", smp=sample_id),
-        "/scratch/ac32082/PeanutRnaSeq/MultiQCCut/fastq_cutadapt_multiqc.html"
+        "/scratch/ac32082/PeanutRnaSeq/MultiQCCut/fastq_cutadapt_multiqc.html",
+        "/scratch/ac32082/PeanutRnaSeq/trinity_assembly/Trinity.fasta"
 rule fastqc:
     input:
         fwd="/work/jawlab/kivanc/PeanutRnaSeq/data/fastq/{smp}_R1.fastq.gz",
@@ -86,4 +87,20 @@ rule multiqc_after:
     log:
         "/scratch/ac32082/PeanutRnaSeq/MultiQCCut/logs/multiqc_cutadapt.log"
     wrapper:
-        "0.35.0/bio/multiqc" 
+        "0.35.0/bio/multiqc"
+
+rule trinity_assembly:
+    input:
+        left=[expand("/work/jawlab/kivanc/PeanutRnaSeq/data/cutadapt/{smp}_cutadapt_R1.fastq.gz", smp=sample_id)],
+        right=[expand("/work/jawlab/kivanc/PeanutRnaSeq/data/cutadapt/{smp}_cutadapt_R2.fastq.gz", smp=sample_id)]
+    output:
+        protected("/scratch/ac32082/PeanutRnaSeq/trinity_assembly/Trinity.fasta")
+    log:
+        "logs/trinity/trinity.log"
+    params:
+        seqtype="fq",
+        max_memory="200G",
+        extra="--SS_lib_type RF"
+    threads: 32
+    wrapper:
+        "0.35.0/bio/trinity"
