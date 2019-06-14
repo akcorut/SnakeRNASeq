@@ -1,6 +1,8 @@
 # SnakemakeRNASeq
 A Snakemake workflow to process paired-end RNA-Seq data.
 
+**Steps:**
+
 - Quality control check on raw data
 - Summarise the FastQC results (MultiQC)
 - Adapter trimming with cutadapt
