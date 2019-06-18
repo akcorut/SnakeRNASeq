@@ -1,7 +1,7 @@
 *
 
 !*.sh
-!Snakefile.*
+!Snakefile
 !config.yaml
 !environment.yaml
 !README.md
