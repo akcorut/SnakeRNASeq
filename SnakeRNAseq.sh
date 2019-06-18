@@ -1,7 +1,7 @@
 #PBS -S /bin/bash
 #PBS -q wallace_q 
 #PBS -N SnakemakeRnaSeq
-#PBS -l walltime=48:00:00
+#PBS -l walltime=96:00:00
 #PBS -l nodes=1:ppn=45
 #PBS -l mem=240gb
 
@@ -17,4 +17,4 @@ source activate snakemake-rnaseq
 export LC_ALL=en_SG.utf8
 export LANG=en_SG.utf8
 
-snakemake --use-conda --cores 40 -s Snakefile.RNAseq
+snakemake --use-conda --cores 40 -s Snakefile
