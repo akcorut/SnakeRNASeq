@@ -1,0 +1,11 @@
+ref:
+  # Reference genome
+  reference: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.KYV3.genome_main.fa"
+  # Reference gene models
+  annotation: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.ann1.CCJH.gene_models_main.gff3"
+  # Index of the reference genome
+  index: "/work/jawlab/kivanc/PeanutRnaSeq/reference/hisat2_index"
+   # Exons
+  exon: "/work/jawlab/kivanc/PeanutRnaSeq/reference/exon"
+  # Splice sites
+  ss: "/work/jawlab/kivanc/PeanutRnaSeq/reference/splice"
