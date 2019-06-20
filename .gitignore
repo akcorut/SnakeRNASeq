@@ -11,3 +11,5 @@
 !scripts/*
 !.gitignore
 !.gitattributes
+!envs/*
+!envs
