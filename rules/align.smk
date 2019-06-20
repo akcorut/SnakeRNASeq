@@ -14,3 +14,15 @@ rule hisat2:
         """
         hisat2 -p {threads} -x {params.index} --dta --rna-strandness RF -1 {input.r1} -2 {input.r2} -S {output.r1}
         """
+
+rule sam2bam:
+    input:
+        r1 = "results/hisat2/{smp}.cutadapt.sam"
+    output:
+        r1 = "results/hisat2/{smp}.cutadapt.bam"
+    threads:
+        32
+    shell:
+        """
+        samtools sort -@ {threads} -o {output.r1} {input.r1}
+        ""
