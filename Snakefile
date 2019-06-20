@@ -41,9 +41,9 @@ rule all:
         expand(
             INDEX_DIR + "/tifrunner.{extension}.ht2",
             extension="1 2 3 4 5 6 7 8".split()),
-        expand("results/hisat2/{smp}.cutadapt.sam", smp=sample_id)
-        
-        
+        expand("results/hisat2/{smp}.cutadapt.sam", smp=sample_id),
+        expand("results/hisat2/{smp}.cutadapt.bam", smp=sample_id
+
 
 include: "rules/fastqc.smk"
 include: "rules/multiqc.smk"
