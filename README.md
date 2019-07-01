@@ -11,7 +11,7 @@ A Snakemake workflow to process paired-end RNA-Seq data.
 - Reference genome indexing
 - Mapping to reference genome using hisat2
 
-![dag](https://user-images.githubusercontent.com/42179487/59709094-f66d5c80-91d3-11e9-873d-cc0e003f4585.png)
+![dag](https://user-images.githubusercontent.com/42179487/60461360-53293800-9c14-11e9-8161-ff5a0973b786.png)
 
 
 
