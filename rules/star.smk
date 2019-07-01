@@ -15,16 +15,19 @@ rule star_index:
 
 rule star_align:
     input:
-        fq1= trim_data + "/{smp}_cutadapt_R1.fastq.gz",
-        fq2= trim_data + "/{smp}_cutadapt_R2.fastq.gz
+        fq1= raw_data + "/{smp}_R1.fastq.gz",
+        fq2= raw_data + "/{smp}_R2.fastq.gz"
     output:
-        "results/star/{smp}/Aligned.out.sam",
-        "results/star/{smp}/ReadsPerGene.out.tab"
+        "results/star/{smp}/Aligned.out.bam",
+        "results/star/{smp}/ReadsPerGene.out.tab",
+        "results/star/{smp}/Aligned.toTranscriptome.out.bam",
+        "results/star/{smp}/Aligned.sortedByCoord.out.bam"
+
     log:
         "results/star/logs/{smp}.log"
     params:
-        index= rules.star_index.output.directory,
-        extra= "--quantMode GeneCounts --sjdbGTFfile {}".format(rules.gff3_to_gtf.output.gtf)
+        index= "/work/jawlab/kivanc/PeanutRnaSeq/reference/star_index",
+        extra= "--quantMode GeneCounts TranscriptomeSAM --outSAMtype BAM SortedByCoordinate Unsorted --sjdbOverhang 100 --sjdbGTFfile {}".format(rules.gff3_to_gtf.output.gtf)
     threads: 40
     wrapper:
         "0.35.1/bio/star/align"
