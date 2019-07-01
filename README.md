@@ -9,7 +9,9 @@ A Snakemake workflow to process paired-end RNA-Seq data.
 - Post quality control check after trimming
 - Summarise the post trimming QC results 
 - Reference genome indexing
-- Mapping to reference genome using hisat2
+- Mapping to reference genome using hisat2 and/or STAR
+- RSeQC evaluation
+- Assemble and quantify expressed genes and transcripts with Stringtie
 
 ![dag](https://user-images.githubusercontent.com/42179487/60461360-53293800-9c14-11e9-8161-ff5a0973b786.png)
 
