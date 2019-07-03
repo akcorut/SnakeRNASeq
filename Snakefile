@@ -47,7 +47,8 @@ rule all:
         expand("results/star/{smp}/Aligned.out.bam", smp=sample_id),
         expand("results/star/{smp}/ReadsPerGene.out.tab", smp=sample_id),
         expand("results/star/{smp}/Aligned.toTranscriptome.out.bam", smp=sample_id),
-        expand("results/star/{smp}/Aligned.sortedByCoord.out.bam", smp=sample_id)
+        expand("results/star/{smp}/Aligned.sortedByCoord.out.bam", smp=sample_id),
+        "results/rseqc/multiqc_report.html"
 
 include: "rules/fastqc.smk"
 include: "rules/multiqc.smk"
@@ -55,3 +56,4 @@ include: "rules/cutadapt.smk"
 include: "rules/index.smk"
 include: "rules/align.smk"
 include: "rules/star.smk"
+include: "rules/rseqc.smk"
