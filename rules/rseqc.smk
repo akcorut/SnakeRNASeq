@@ -3,7 +3,6 @@ rule gff2bed:
         anno=ANNOTATION
     output:
         bed="results/rseqc/tifrunner_annotation.bed",
-    priority: 2
     log:
         "results/rseqc/logs/gtf2bed.log"
     conda:
@@ -142,7 +141,7 @@ rule rseqc_readgc:
         "read_GC.py -i {input} -o {params.prefix} > {log} 2>&1"
         
 
-rule multiqc:
+rule multiqc_rseqc:
     input:
         expand("results/star/{smp}/Aligned.out.bam", smp=sample_id),
         expand("results/rseqc/{smp}.junctionanno.junction.bed", smp=sample_id),
@@ -159,4 +158,4 @@ rule multiqc:
     log:
         "results/rseqc/logs/multiqc.log"
     wrapper:
-"0.31.1/bio/multiqc"
+        "0.31.1/bio/multiqc"
