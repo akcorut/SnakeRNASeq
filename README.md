@@ -13,7 +13,7 @@ A Snakemake workflow to process paired-end RNA-Seq data.
 - RSeQC evaluation
 - Assemble and quantify expressed genes and transcripts with Stringtie
 
-![dag](https://user-images.githubusercontent.com/42179487/60461360-53293800-9c14-11e9-8161-ff5a0973b786.png)
+![dag](https://user-images.githubusercontent.com/42179487/60604416-a2db4100-9d85-11e9-9c35-aa84c0da85fa.png)
 
 
 
