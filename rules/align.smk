@@ -25,4 +25,4 @@ rule sam2bam:
     shell:
         """
         samtools sort -@ {threads} -o {output.r1} {input.r1}
-        ""
+        """

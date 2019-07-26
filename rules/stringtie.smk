@@ -7,7 +7,8 @@ rule stringtie:
         r3 = "results/stringtie/{smp}/cov_ref.gtf"
     params:
         gtf= rules.gff3_to_gtf.output.gtf
-
-    shell: """
+    threads: 24
+    shell:
+    """
     stringtie -G {params.gtf} --rf -e -B -o {output.r1} -A {output.r2} -C {output.r3} --rf {input.r1}
-"""
+    """

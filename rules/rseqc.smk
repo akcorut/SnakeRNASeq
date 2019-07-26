@@ -1,19 +1,20 @@
-rule gff2bed:
+rule gtf2bed:
     input:
-        anno=ANNOTATION
+        rules.gff3_to_gtf.output.gtf
     output:
         bed="results/rseqc/tifrunner_annotation.bed",
+        db=temp("results/rseqc/tifrunner_annotation.db")
     log:
         "results/rseqc/logs/gtf2bed.log"
     conda:
-        "../envs/bedops.yaml"
+        "../envs/gffutils.yaml"
     script:
-        "gff2bed < {input.anno} > {output.bed}"
+        "../scripts/gtf2bed.py"
 
 rule rseqc_junction_annotation:
     input:
         bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gff2bed.output.bed
+        bed=rules.gtf2bed.output.bed
     output:
         "results/rseqc/{smp}.junctionanno.junction.bed"
     priority: 1
@@ -32,7 +33,7 @@ rule rseqc_junction_annotation:
 rule rseqc_junction_saturation:
     input:
         bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gff2bed.output.bed
+        bed=rules.gtf2bed.output.bed
     output:
         "results/rseqc/{smp}.junctionsat.junctionSaturation_plot.pdf"
     priority: 1
@@ -65,7 +66,7 @@ rule rseqc_stat:
 rule rseqc_infer:
     input:
         bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gff2bed.output.bed
+        bed=rules.gtf2bed.output.bed
     output:
         "results/rseqc/{smp}.infer_experiment.txt"
     priority: 1
@@ -80,7 +81,7 @@ rule rseqc_infer:
 rule rseqc_innerdis:
     input:
         bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gff2bed.output.bed
+        bed=rules.gtf2bed.output.bed
     output:
         "results/rseqc/{smp}.inner_distance_freq.inner_distance.txt"
     priority: 1
@@ -97,7 +98,7 @@ rule rseqc_innerdis:
 rule rseqc_readdis:
     input:
         bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gff2bed.output.bed
+        bed=rules.gtf2bed.output.bed
     output:
         "results/rseqc/{smp}.readdistribution.txt"
     priority: 1
