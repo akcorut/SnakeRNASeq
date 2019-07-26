@@ -48,7 +48,12 @@ rule all:
         expand("results/star/{smp}/ReadsPerGene.out.tab", smp=sample_id),
         expand("results/star/{smp}/Aligned.toTranscriptome.out.bam", smp=sample_id),
         expand("results/star/{smp}/Aligned.sortedByCoord.out.bam", smp=sample_id),
-        "results/rseqc/multiqc_report.html"
+        "results/rseqc/multiqc_report.html",
+        "results/rseqc/hisat2/multiqc_rseqc_h2_report.html",
+        expand("/scratch/ac32082/PeanutRnaSeq/results/trimmed/{smp}_R1_val_1.fq.gz", smp=sample_id),
+        expand("/scratch/ac32082/PeanutRnaSeq/results/trimmed/{smp}_R2_val_2.fq.gz", smp=sample_id),
+        "results/trimmed/trim_galore_multiqc_report.html",
+        "results/MultiQCTrim/multiqc_report_trim_galore.html"
 
 include: "rules/fastqc.smk"
 include: "rules/multiqc.smk"
@@ -57,3 +62,5 @@ include: "rules/index.smk"
 include: "rules/align.smk"
 include: "rules/star.smk"
 include: "rules/rseqc.smk"
+include: "rules/rseqc_hisat.smk"
+include: "rules/trim_galore.smk"
