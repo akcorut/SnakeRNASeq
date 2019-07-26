@@ -19,3 +19,14 @@ rule multiqc_after:
         "results/MultiQCCut/logs/multiqc_cutadapt.log"
     wrapper:
         "0.35.0/bio/multiqc"
+
+rule multiqc_trim_galore:
+    input:
+        expand("results/FastQCTrim/{smp}_R1_val_1_fastqc.html", smp=sample_id),
+        expand("results/FastQCTrim/{smp}_R2_val_2_fastqc.html", smp=sample_id)
+    output:
+        "results/MultiQCTrim/multiqc_report_trim_galore.html"
+    log:
+        "results/MultiQCTrim/logs/multiqc.log"
+    wrapper:
+        "0.31.1/bio/multiqc"
