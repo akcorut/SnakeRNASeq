@@ -2,6 +2,7 @@
 A Snakemake workflow to process paired-end RNA-Seq data.
 
 **Steps:**
+
 The workflow consists following steps/rules with potential additions and extractions:
 
 - Quality control of the raw data (FastQC, MultiQC)
