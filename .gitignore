@@ -13,3 +13,5 @@
 !.gitattributes
 !envs/*
 !envs
+!rules/extra
+!rules/extra/*
