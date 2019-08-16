@@ -14,7 +14,7 @@ from os.path import join
 configfile: "config.yaml"
 
 raw_data = "/work/jawlab/kivanc/PeanutRnaSeq/data/fastq"
-trim_data = "/work/jawlab/kivanc/PeanutRnaSeq/data/cutadapt"
+trim_data = "/scratch/ac32082/PeanutRnaSeq/results/trimmed"
 
 REFERENCE = config["ref"]["reference"]
 ANNOTATION = config["ref"]["annotation"]
@@ -30,37 +30,28 @@ rule all:
         expand("results/FastQC/{smp}_R1_fastqc.html", smp=sample_id),
         expand("results/FastQC/{smp}_R2_fastqc.html", smp=sample_id),
         "results/MultiQC/fastq_multiqc.html",
-        expand("/work/jawlab/kivanc/PeanutRnaSeq/data/cutadapt/{smp}_cutadapt_R1.fastq.gz", smp=sample_id),
-        expand("/work/jawlab/kivanc/PeanutRnaSeq/data/cutadapt/{smp}_cutadapt_R2.fastq.gz", smp=sample_id),
-        expand("results/FastQCCut/{smp}_cutadapt_R1_fastqc.html", smp=sample_id),
-        expand("results/FastQCCut/{smp}_cutadapt_R2_fastqc.html", smp=sample_id),
-        "results/MultiQCCut/fastq_cutadapt_multiqc.html",
         "/work/jawlab/kivanc/PeanutRnaSeq/reference/tifrunner_gene_models.gtf",
         SS_DIR + "/tifrunner_splice_sites.tsv",
         EXON_DIR + "/tifrunner_exons.tsv",
         expand(
             INDEX_DIR + "/tifrunner.{extension}.ht2",
             extension="1 2 3 4 5 6 7 8".split()),
-        expand("results/hisat2/{smp}.cutadapt.sam", smp=sample_id),
-        expand("results/hisat2/{smp}.cutadapt.bam", smp=sample_id),
         "/work/jawlab/kivanc/PeanutRnaSeq/reference/star_index",
         expand("results/star/{smp}/Aligned.out.bam", smp=sample_id),
         expand("results/star/{smp}/ReadsPerGene.out.tab", smp=sample_id),
         expand("results/star/{smp}/Aligned.toTranscriptome.out.bam", smp=sample_id),
         expand("results/star/{smp}/Aligned.sortedByCoord.out.bam", smp=sample_id),
         "results/rseqc/multiqc_report.html",
-        "results/rseqc/hisat2/multiqc_rseqc_h2_report.html",
-        expand("/scratch/ac32082/PeanutRnaSeq/results/trimmed/{smp}_R1_val_1.fq.gz", smp=sample_id),
-        expand("/scratch/ac32082/PeanutRnaSeq/results/trimmed/{smp}_R2_val_2.fq.gz", smp=sample_id),
+        expand("results/trimmed/{smp}_R1_val_1.fq.gz", smp=sample_id),
+        expand("results/trimmed/{smp}_R2_val_2.fq.gz", smp=sample_id),
         "results/trimmed/trim_galore_multiqc_report.html",
-        "results/MultiQCTrim/multiqc_report_trim_galore.html"
+        "results/MultiQCTrim/multiqc_report_trim_galore.html",
+        expand("results/hisat2/{smp}.trimmed.bam", smp=sample_id)
 
 include: "rules/fastqc.smk"
 include: "rules/multiqc.smk"
-include: "rules/cutadapt.smk"
 include: "rules/index.smk"
-include: "rules/align.smk"
+include: "rules/hisat2.smk"
 include: "rules/star.smk"
 include: "rules/rseqc.smk"
-include: "rules/rseqc_hisat.smk"
 include: "rules/trim_galore.smk"
