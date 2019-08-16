@@ -3,17 +3,22 @@ A Snakemake workflow to process paired-end RNA-Seq data.
 
 **Steps:**
 
-- Quality control check on raw data (FastQC)
-- Summarise the quality control results (MultiQC)
-- Adapter trimming with cutadapt
-- Post quality control check after trimming
-- Summarise the post trimming QC results 
-- Reference genome indexing
-- Mapping to reference genome using hisat2 and/or STAR
-- RSeQC evaluation
-- Assemble and quantify expressed genes and transcripts with Stringtie
+The workflow consists following steps:
 
-![dag](https://user-images.githubusercontent.com/42179487/60604416-a2db4100-9d85-11e9-9c35-aa84c0da85fa.png)
+- Quality control of the raw and trimmed data (FastQC, MultiQC)
+- Adapter trimming w/ trim_galore
+- Alignment/mapping to the reference genome (hisat2, STAR)
+- Quality control with RSeQC
+
+Potential future additions:
+
+- Transcript quantification (stringtie)
+- De-novo assembly (trinity, rnaSPAdes)
+- Alignment-free transcript quantification (kallisto/salmon)
+- Machine learning based gene expression level quality control (GeneQC)
+- Differential gene expression analysis (deseq2/ballgown/sleuth) 
+
+![dag](https://user-images.githubusercontent.com/42179487/63191116-c0aeed80-c035-11e9-8392-45c40d385c74.png)
 
 
 
