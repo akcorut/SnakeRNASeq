@@ -1,7 +1,7 @@
 #PBS -S /bin/bash
 #PBS -q wallace_q 
 #PBS -N SnakemakeRnaSeq
-#PBS -l walltime=120:00:00
+#PBS -l walltime=240:00:00
 #PBS -l nodes=1:ppn=40
 #PBS -l mem=240gb
 

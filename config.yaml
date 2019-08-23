@@ -9,3 +9,7 @@ ref:
   exon: "/work/jawlab/kivanc/PeanutRnaSeq/reference/exon"
   # Splice sites
   ss: "/work/jawlab/kivanc/PeanutRnaSeq/reference/splice"
+
+trimming:
+  # skip trimming: false or true
+  skip: false

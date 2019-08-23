@@ -40,8 +40,6 @@ rule all:
         expand("results/star/{smp}/Aligned.out.bam", smp=sample_id),
         expand("results/star/{smp}/ReadsPerGene.out.tab", smp=sample_id),
         expand("results/star/{smp}/Aligned.toTranscriptome.out.bam", smp=sample_id),
-        expand("results/star/{smp}/Aligned.sortedByCoord.out.bam", smp=sample_id),
-        "results/rseqc/multiqc_report.html",
         expand("results/trimmed/{smp}_R1_val_1.fq.gz", smp=sample_id),
         expand("results/trimmed/{smp}_R2_val_2.fq.gz", smp=sample_id),
         "results/trimmed/trim_galore_multiqc_report.html",
@@ -53,5 +51,4 @@ include: "rules/multiqc.smk"
 include: "rules/index.smk"
 include: "rules/hisat2.smk"
 include: "rules/star.smk"
-include: "rules/rseqc.smk"
 include: "rules/trim_galore.smk"
