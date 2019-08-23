@@ -29,26 +29,6 @@ rule rseqc_junction_annotation:
         "junction_annotation.py {params.extra} -i {input.bam} -r {input.bed} -o {params.prefix} "
         "> {log[0]} 2>&1"
 
-        
-rule rseqc_junction_saturation:
-    input:
-        bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gtf2bed.output.bed
-    output:
-        "results/rseqc/{smp}.junctionsat.junctionSaturation_plot.pdf"
-    priority: 1
-    log:
-        "results/rseqc/logs/rseqc_junction_saturation/{smp}.log"
-    params:
-        extra=r"-q 255", 
-        prefix="results/rseqc/{smp}.junctionsat"
-    conda:
-        "../envs/rseqc.yaml"
-    shell:
-        "junction_saturation.py {params.extra} -i {input.bam} -r {input.bed} -o {params.prefix} "
-        "> {log} 2>&1"
-
-
 rule rseqc_stat:
     input:
         "results/star/{smp}/Aligned.out.bam"
@@ -77,24 +57,6 @@ rule rseqc_infer:
     shell:
         "infer_experiment.py -r {input.bed} -i {input.bam} > {output} 2> {log}"
 
-        
-rule rseqc_innerdis:
-    input:
-        bam="results/star/{smp}/Aligned.out.bam",
-        bed=rules.gtf2bed.output.bed
-    output:
-        "results/rseqc/{smp}.inner_distance_freq.inner_distance.txt"
-    priority: 1
-    log:
-        "results/rseqc/logs/rseqc_innerdis/{smp}.log"
-    params:
-        prefix="results/rseqc/{smp}.inner_distance_freq"
-    conda:
-        "../envs/rseqc.yaml"
-    shell:
-        "inner_distance.py -r {input.bed} -i {input.bam} -o {params.prefix} > {log} 2>&1"
-
-
 rule rseqc_readdis:
     input:
         bam="results/star/{smp}/Aligned.out.bam",
@@ -108,23 +70,6 @@ rule rseqc_readdis:
         "../envs/rseqc.yaml"
     shell:
         "read_distribution.py -r {input.bed} -i {input.bam} > {output} 2> {log}"
-
-
-rule rseqc_readdup:
-    input:
-        "results/star/{smp}/Aligned.out.bam"
-    output:
-        "results/rseqc/{smp}.readdup.DupRate_plot.pdf"
-    priority: 1
-    log:
-        "results/rseqc/logs/rseqc_readdup/{smp}.log"
-    params:
-        prefix="results/rseqc/{smp}.readdup"
-    conda:
-        "../envs/rseqc.yaml"
-    shell:
-        "read_duplication.py -i {input} -o {params.prefix} > {log} 2>&1"
-
         
 rule rseqc_readgc:
     input:
@@ -146,12 +91,9 @@ rule multiqc_rseqc:
     input:
         expand("results/star/{smp}/Aligned.out.bam", smp=sample_id),
         expand("results/rseqc/{smp}.junctionanno.junction.bed", smp=sample_id),
-        expand("results/rseqc/{smp}.junctionsat.junctionSaturation_plot.pdf", smp=sample_id),
         expand("results/rseqc/{smp}.infer_experiment.txt", smp=sample_id),
         expand("results/rseqc/{smp}.stats.txt", smp=sample_id),
-        expand("results/rseqc/{smp}.inner_distance_freq.inner_distance.txt", smp=sample_id),
         expand("results/rseqc/{smp}.readdistribution.txt", smp=sample_id),
-        expand("results/rseqc/{smp}.readdup.DupRate_plot.pdf", smp=sample_id),
         expand("results/rseqc/{smp}.readgc.GC_plot.pdf", smp=sample_id),
         expand("results/rseqc/logs/rseqc_junction_annotation/{smp}.log", smp=sample_id)
     output:
