@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconda::salmon=0.14.1
+  - bioconda::bedtools 
+  - bioconda::mashmap

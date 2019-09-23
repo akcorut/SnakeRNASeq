@@ -21,7 +21,8 @@ ANNOTATION = config["ref"]["annotation"]
 INDEX_DIR = config["ref"]["index"]
 EXON_DIR = config["ref"]["exon"]
 SS_DIR = config["ref"]["ss"]
-
+TRANSCRIPTOME = config["ref"]["tcp"]
+TRANSCRIPTS = config["ref"]["transcript"]
 
 sample_id, run_id = glob_wildcards(raw_data + "/{smp}_R{run}.fastq.gz")
 
@@ -40,11 +41,24 @@ rule all:
         expand("results/star/{smp}/Aligned.out.bam", smp=sample_id),
         expand("results/star/{smp}/ReadsPerGene.out.tab", smp=sample_id),
         expand("results/star/{smp}/Aligned.toTranscriptome.out.bam", smp=sample_id),
+        expand("results/star/{smp}/Aligned.sortedByCoord.out.bam", smp=sample_id),
         expand("results/trimmed/{smp}_R1_val_1.fq.gz", smp=sample_id),
         expand("results/trimmed/{smp}_R2_val_2.fq.gz", smp=sample_id),
         "results/trimmed/trim_galore_multiqc_report.html",
         "results/MultiQCTrim/multiqc_report_trim_galore.html",
-        expand("results/hisat2/{smp}.trimmed.bam", smp=sample_id)
+        expand("results/hisat2/{smp}.trimmed.bam", smp=sample_id),
+        "results/rseqc/multiqc_report.html",
+        "results/feature/featureCounts_results.txt",
+        expand("results/stringtie/{smp}/transcript.gtf", smp=sample_id),
+        expand("results/stringtie/{smp}/gene_abundances.tsv", smp=sample_id),
+        expand("results/stringtie/{smp}/cov_ref.gtf", smp=sample_id),
+        "results/stringtie/merge_transcripts.gtf",
+        "results/stringtie/gffcompare/stringtie.stats",
+        "results/feature/feature_multiqc.html",
+        expand("results/kallisto/quant/quant_results_{smp}", smp=sample_id),
+        "results/kallisto/kallisto_multiqc.html",
+        #expand("results/salmon/quant/{smp}_salmon_quant", smp=sample_id)
+
 
 include: "rules/fastqc.smk"
 include: "rules/multiqc.smk"
@@ -52,3 +66,8 @@ include: "rules/index.smk"
 include: "rules/hisat2.smk"
 include: "rules/star.smk"
 include: "rules/trim_galore.smk"
+include: "rules/rseqc.smk"
+include: "rules/featureCounts.smk"
+include: "rules/stringtie.smk"
+include: "rules/kallisto.smk"
+#include: "rules/salmon.smk"

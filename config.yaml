@@ -9,6 +9,12 @@ ref:
   exon: "/work/jawlab/kivanc/PeanutRnaSeq/reference/exon"
   # Splice sites
   ss: "/work/jawlab/kivanc/PeanutRnaSeq/reference/splice"
+  
+  sj: "/work/jawlab/kivanc/PeanutRnaSeq/reference/SJ.filtered.tab"
+
+  tcp: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.tcp1.sSQ6.transcript_atlas.fa"
+
+  transcript: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.ann1.CCJH.transcript.fa"
 
 trimming:
   # skip trimming: false or true

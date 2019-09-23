@@ -19,3 +19,23 @@ rule multiqc_trim_galore:
         "results/MultiQCTrim/logs/multiqc.log"
     wrapper:
         "0.31.1/bio/multiqc"
+
+rule multiqc_feature:
+    input:
+        "results/feature/featureCounts_results.txt.summary"
+    output:
+        "results/feature/feature_multiqc.html"
+    log:
+        "results/feature/logs/multiqc.log"
+    wrapper:
+        "0.35.0/bio/multiqc"
+
+rule multiqc_kallisto:
+    input:
+        expand("results/kallisto/logs/kallisto_quant_{smp}.log", smp=sample_id),
+    output:
+        "results/kallisto/kallisto_multiqc.html"
+    log:
+        "results/kallisto/logs/multiqc.log"
+    wrapper:
+        "0.35.0/bio/multiqc"
