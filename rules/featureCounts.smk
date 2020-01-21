@@ -10,5 +10,9 @@ rule featureCounts:
     threads:20
     shell:
         """
+<<<<<<< HEAD
         featureCounts -T {threads} -p -t exon -g gene_id -M --fraction -J -G {input.fasta} -a {input.gtf} -o {output} {input.bam} 
+=======
+        featureCounts -T {threads} -p -t exon -g gene_id -M --fraction -J -G {input.fasta} -a {input.gtf} -o {output} {input.bam}
+>>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
         """

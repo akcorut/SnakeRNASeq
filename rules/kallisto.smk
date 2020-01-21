@@ -18,7 +18,11 @@ rule kallisto_quant:
     output:
         directory("results/kallisto/quant/quant_results_{smp}")
     params:
+<<<<<<< HEAD
         extra = "-b 100 --bias --fusion --gtf work/jawlab/kivanc/PeanutRnaSeq/reference/tifrunner_gene_models.gtf"
+=======
+        extra = "-b 100"
+>>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
     log:
         "results/kallisto/logs/kallisto_quant_{smp}.log"
     threads: 16

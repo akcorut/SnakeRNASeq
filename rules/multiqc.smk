@@ -28,7 +28,11 @@ rule multiqc_feature:
     log:
         "results/feature/logs/multiqc.log"
     wrapper:
+<<<<<<< HEAD
         "0.39.0/bio/multiqc"
+=======
+        "0.35.0/bio/multiqc"
+>>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
 
 rule multiqc_kallisto:
     input:
@@ -38,6 +42,7 @@ rule multiqc_kallisto:
     log:
         "results/kallisto/logs/multiqc.log"
     wrapper:
+<<<<<<< HEAD
         "0.35.0/bio/multiqc"
 
 rule multiqc_salmon:
@@ -69,3 +74,6 @@ rule multiqc_qualimap:
         "results/qualimap/logs/multiqc.log"
     wrapper:
         "0.47.0/bio/multiqc"
+=======
+        "0.35.0/bio/multiqc"
+>>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
