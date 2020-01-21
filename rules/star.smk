@@ -32,12 +32,13 @@ rule star_align:
     output:
         "results/star/{smp}/Aligned.out.bam",
         "results/star/{smp}/ReadsPerGene.out.tab",
-        "results/star/{smp}/Aligned.toTranscriptome.out.bam"
+        "results/star/{smp}/Aligned.toTranscriptome.out.bam",
+        "results/star/{smp}/Aligned.sortedByCoord.out.bam"
     log:
         "results/star/logs/{smp}.log"
     params:
         index= "/work/jawlab/kivanc/PeanutRnaSeq/reference/star_index",
-        extra= "--twopassMode Basic --outSAMunmapped Within --limitOutSJcollapsed 1000000 --limitSjdbInsertNsj 1000000 --outFilterMultimapNmax 100 --outFilterMismatchNmax 33 --outFilterMismatchNoverLmax 0.3 --seedSearchStartLmax 12 --alignSJoverhangMin 15 --alignEndsType Local --outFilterMatchNminOverLread 0 --outFilterScoreMinOverLread 0.3 --winAnchorMultimapNmax 50 --alignSJDBoverhangMin 3 --quantMode GeneCounts TranscriptomeSAM --outSAMtype BAM Unsorted --sjdbOverhang 100 --sjdbGTFfile {}".format(rules.gff3_to_gtf.output.gtf)
-    threads: 16
+        extra= "--outSAMunmapped Within --outSAMtype BAM SortedByCoordinate Unsorted --quantMode GeneCounts TranscriptomeSAM --outFilterScoreMinOverLread 0.9 --sjdbOverhang 100 --sjdbFileChrStartEnd {} --sjdbGTFfile {}".format(config["ref"]["sj"], rules.gff3_to_gtf.output.gtf)
+    threads: 30
     wrapper:
         "0.35.1/bio/star/align"

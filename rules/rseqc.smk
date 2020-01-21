@@ -4,6 +4,7 @@ rule gtf2bed:
     output:
         bed="results/rseqc/tifrunner_annotation.bed",
         db=temp("results/rseqc/tifrunner_annotation.db")
+    priority: 50
     log:
         "results/rseqc/logs/gtf2bed.log"
     conda:
@@ -85,7 +86,36 @@ rule rseqc_readgc:
         "../envs/rseqc.yaml"
     shell:
         "read_GC.py -i {input} -o {params.prefix} > {log} 2>&1"
-        
+
+#rule rseqc_readqual:
+#    input:
+#        "results/star/{smp}/Aligned.out.bam"
+#    output:
+#        "results/rseqc/{smp}.readqual.heatmap.pdf",
+#        "results/rseqc/{smp}.readqual.boxplot.pdf"
+#    priority: 1
+#    log:
+#        "results/rseqc/logs/rseqc_readqual/{smp}.log"
+#    params:
+#        prefix="results/rseqc/{smp}.readqual"
+#    conda:
+#        "../envs/rseqc.yaml"
+#    shell:
+#        "read_quality.py -i {input} -o {params.prefix} > {log} 2>&1"
+
+#rule rseqc_infer_hisat2:
+#    input:
+#        bam="results/hisat2/{smp}.trimmed.bam",
+#        bed=rules.gtf2bed.output.bed
+#    output:
+#        "results/rseqc/hisat2/{smp}.infer_experiment.txt"
+#    priority: 1
+#    log:
+#        "results/rseqc/hisat2/logs/rseqc_infer/{smp}.log"
+#    conda:
+#        "../envs/rseqc.yaml"
+#    shell:
+#        "infer_experiment.py -r {input.bed} -i {input.bam} > {output} 2> {log}"
 
 rule multiqc_rseqc:
     input:
@@ -95,7 +125,10 @@ rule multiqc_rseqc:
         expand("results/rseqc/{smp}.stats.txt", smp=sample_id),
         expand("results/rseqc/{smp}.readdistribution.txt", smp=sample_id),
         expand("results/rseqc/{smp}.readgc.GC_plot.pdf", smp=sample_id),
-        expand("results/rseqc/logs/rseqc_junction_annotation/{smp}.log", smp=sample_id)
+        expand("results/rseqc/logs/rseqc_junction_annotation/{smp}.log", smp=sample_id),
+        #expand("results/rseqc/{smp}.readqual.heatmap.pdf", smp=sample_id),
+        #expand("results/rseqc/{smp}.readqual.boxplot.pdf", smp=sample_id),
+        expand("results/star/{smp}/Log.final.out", smp=sample_id)
     output:
         "results/rseqc/multiqc_report.html"
     log:
