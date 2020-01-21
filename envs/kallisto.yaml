@@ -2,4 +2,5 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bioconda::gffutils=0.9
+  - kallisto =0.46
+  - hdf5 =1.10
