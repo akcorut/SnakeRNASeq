@@ -57,7 +57,6 @@ rule all:
         "results/feature/feature_multiqc.html",
         expand("results/kallisto/quant/quant_results_{smp}", smp=sample_id),
         "results/kallisto/kallisto_multiqc.html",
-<<<<<<< HEAD
         expand("results/salmon/quant/{smp}_salmon_quant", smp=sample_id),
         "results/salmon/salmon_multiqc.html",
         config["rsem"]["rsemindex"] + ".n2g.idx.fa",
@@ -67,10 +66,6 @@ rule all:
         "results/qualimap/qualimap_multiqc.html",
         expand("results/rrnaCheck/bam/{smp}_rrna.bam", smp=sample_id),
         "results/rrnaCheck/rrna_multiqc_report.html"
-=======
-        #expand("results/salmon/quant/{smp}_salmon_quant", smp=sample_id)
-
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
 
 include: "rules/fastqc.smk"
 include: "rules/multiqc.smk"
@@ -82,11 +77,7 @@ include: "rules/rseqc.smk"
 include: "rules/featureCounts.smk"
 include: "rules/stringtie.smk"
 include: "rules/kallisto.smk"
-<<<<<<< HEAD
 include: "rules/salmon.smk"
 include: "rules/rsem.smk"
 include: "rules/qualimap.smk"
 include: "rules/rrna_check.smk"
-=======
-#include: "rules/salmon.smk"
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
