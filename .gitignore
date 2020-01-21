@@ -7,6 +7,7 @@
 !README.md
 !rules
 !rules/*
+!rules/extra/*
 !scripts
 !scripts/*
 !.gitignore
