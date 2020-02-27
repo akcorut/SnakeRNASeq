@@ -5,12 +5,12 @@ A Snakemake workflow to process paired-end RNA-Seq data.
 
 The workflow consists following steps:
 
-- Quality control of the raw and trimmed data (FastQC, MultiQC)
+- Quality control of the raw and/or trimmed data (FastQC, MultiQC)
 - Adapter trimming w/ trim_galore (Optional)
+- Contamination check and decontamination (Optional)
 - Alignment to the reference genome (hisat2, STAR)
 - Quality control with RSeQC, QualiMap
-- Checks against rRNA contamination
-- Transcript quantification (StringTie, featureCounts. RSEM)
+- Transcript/gene quantification (StringTie, featureCounts, RSEM)
 - Alignment-free transcript quantification (kallisto/salmon)
 
 Future additions:
