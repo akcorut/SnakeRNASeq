@@ -5,25 +5,54 @@ ref:
   annotation: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.ann1.CCJH.gene_models_main.gff3"
   # Index of the reference genome
   index: "/work/jawlab/kivanc/PeanutRnaSeq/reference/hisat2_index"
-   # Exons
+  # Exons
   exon: "/work/jawlab/kivanc/PeanutRnaSeq/reference/exon"
   # Splice sites
   ss: "/work/jawlab/kivanc/PeanutRnaSeq/reference/splice"
   
   sj: "/work/jawlab/kivanc/PeanutRnaSeq/reference/SJ.filtered.tab"
 
-  tcp: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.tcp1.sSQ6.transcript_atlas.fa"
-
   transcript: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.ann1.CCJH.transcript.fa"
 
-  transcriptV2: "/work/jawlab/kivanc/PeanutRnaSeq/reference2/arahy.Tifrunner.gnm2.ann1.4K0L.transcript.fa"
+  reference2: "/work/jawlab/kivanc/PeanutRnaSeq/reference_2/arahy.Tifrunner.gnm2.J5K5.genome_main.fa"
 
-  annotationV2: "/work/jawlab/kivanc/PeanutRnaSeq/reference2/arahy.Tifrunner.gnm2.gene_models.gtf"
+  transcript2: "/work/jawlab/kivanc/PeanutRnaSeq/reference_2/arahy.Tifrunner.gnm2.ann1.4K0L.transcript.fa"
+
+  annotation2: "/work/jawlab/kivanc/PeanutRnaSeq/reference_2/arahy.Tifrunner.gnm2.gene_models.gtf"
 
 trimming:
   # skip trimming: false or true
   skip: false
 
+decontamination:
+  skip: false
+
+alignment:
+  activate: true
+
+star:
+  activate: true
+
+hisat2:
+  activate: false
+
+alignment_free:
+  activate: true
+
+kallisto:
+  activate: true
+
+salmon:
+  activate: true
+
 rsem:
   rsemindex: results/rsem/rsem_index/tifrunner
   genes: "results/rsem/genes"
+
+salmon_mode:
+  mapping_mode: true
+  alignment_mode: false
+
+samples:
+  meristem: meristem.tsv
+  leaf: leaf.tsv
