@@ -28,32 +28,38 @@ rule multiqc_feature:
     log:
         "results/feature/logs/multiqc.log"
     wrapper:
-<<<<<<< HEAD
         "0.39.0/bio/multiqc"
-=======
-        "0.35.0/bio/multiqc"
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
 
 rule multiqc_kallisto:
     input:
-        expand("results/kallisto/logs/kallisto_quant_{smp}.log", smp=sample_id),
+        expand("results/kallisto/quant/{smp}.log", smp=sample_id)
     output:
         "results/kallisto/kallisto_multiqc.html"
     log:
         "results/kallisto/logs/multiqc.log"
     wrapper:
-<<<<<<< HEAD
-        "0.35.0/bio/multiqc"
+        "0.49.0/bio/multiqc"
 
 rule multiqc_salmon:
     input:
-        expand("results/salmon/quant/{smp}_salmon_quant", smp=sample_id)
+        expand("results/salmon/quant/{smp}", smp=sample_id)
     output:
         "results/salmon/salmon_multiqc.html"
     log:
         "results/salmon/logs/multiqc.log"
     wrapper:
-        "0.35.0/bio/multiqc"
+        "0.49.0/bio/multiqc"
+
+if config["salmon_mode"]["alignment_mode"]:
+    rule multiqc_salmon_align:
+        input:
+            expand("results/salmon_align/quant/{smp}_salmon_quant_align", smp=sample_id)
+        output:
+            "results/salmon_align/salmon_align_multiqc.html"
+        log:
+            "results/salmon_align/logs/multiqc.log"
+        wrapper:
+            "0.47.0/bio/multiqc"
 
 rule multiqc_rsem:
     input:
@@ -74,6 +80,44 @@ rule multiqc_qualimap:
         "results/qualimap/logs/multiqc.log"
     wrapper:
         "0.47.0/bio/multiqc"
-=======
-        "0.35.0/bio/multiqc"
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
+
+rule multiqc_decont:
+    input:
+        expand("results/FastQCDecont/{smp}_R1_clean_fastqc.html", smp=sample_id),
+        expand("results/FastQCDecont/{smp}_R2_clean_fastqc.html", smp=sample_id)
+    output:
+        "results/MultiQCDecont/multiqc_report_decont.html"
+    log:
+        "results/MultiQCDecont/logs/multiqc.log"
+    wrapper:
+        "0.47.0/bio/multiqc"
+
+rule multiqc_salmonV2:
+    input:
+        expand("results/salmonV2/quant/{smp}_salmon_quant", smp=sample_id)
+    output:
+        "results/salmonV2/salmon_multiqc.html"
+    log:
+        "results/salmonV2/logs/multiqc.log"
+    wrapper:
+        "0.47.0/bio/multiqc"
+
+rule multiqc_kallisto_V2:
+    input:
+        expand("results/kallistoV2/quant/{smp}.log", smp=sample_id),
+    output:
+        "results/kallistoV2/kallistoV2_multiqc.html"
+    log:
+        "results/kallistoV2/logs/multiqc.log"
+    wrapper:
+        "0.49.0/bio/multiqc"
+
+rule multiqc_starV2:
+    input:
+        expand("results/starV2/pass2/{smp}/Log.final.out", smp=sample_id)
+    output:
+        "results/starV2/starV2_multiqc_report.html"
+    log:
+        "results/starV2/logs/multiqc.log"
+    wrapper:
+        "0.49.0/bio/multiqc"

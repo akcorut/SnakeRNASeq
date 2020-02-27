@@ -102,7 +102,6 @@ rule rseqc_readgc:
 #        "../envs/rseqc.yaml"
 #    shell:
 #        "read_quality.py -i {input} -o {params.prefix} > {log} 2>&1"
-<<<<<<< HEAD
 
 #rule rseqc_infer_hisat2:
 #    input:
@@ -117,9 +116,6 @@ rule rseqc_readgc:
 #        "../envs/rseqc.yaml"
 #    shell:
 #        "infer_experiment.py -r {input.bed} -i {input.bam} > {output} 2> {log}"
-=======
-    
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
 
 rule multiqc_rseqc:
     input:

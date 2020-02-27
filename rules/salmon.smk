@@ -1,73 +1,88 @@
-rule salmon_decoy:
+rule salmon_meta:
     input:
         ref= REFERENCE,
-        gtf= rules.gff3_to_gtf.output.gtf,
-<<<<<<< HEAD
         tcp= TRANSCRIPTS
     output:
-        fasta= "results/salmon/decoy/gentrome.fa",
-        decoy= "results/salmon/decoy/decoys.txt"
+        gent= "results/salmon/decoy/gentrome.fa",
+        decoy= "results/salmon/decoy/decoys.txt",
+        bak="results/salmon/decoy/decoys.txt.bak"
     priority:50
     conda:
         "../envs/salmon.yaml"
     threads:8
-    params:
-        prefix="results/salmon/decoy"
     shell:
         """
-        bash scripts/SalmonTools/scripts/generateDecoyTranscriptome.sh -j {threads} -g {input.ref} -t {input.tcp} -a {input.gtf} -o {params.prefix}
-=======
-        tcp= TRANSCRIPTOME
-    output:
-        directory("results/salmon/decoy")
-    conda:
-        "../envs/salmon.yaml"
-    threads:8
-    shell:
-        """
-        bash scripts/SalmonTools/scripts/generateDecoyTranscriptome.sh -j {threads} -g {input.ref} -t {input.tcp} -a {input.gtf} -o {output}
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
+        grep "^>" {input.ref} | cut -d " " -f 1 > {output.decoy}
+        sed -i.bak -e 's/>//g' {output.decoy}
+        cat {input.tcp} {input.ref} > {output.gent}
         """
 
 rule salmon_index:
     input:
-        fasta= "results/salmon/decoy/gentrome.fa",
-        decoy= "results/salmon/decoy/decoys.txt"
+        gent= "results/salmon/decoy/gentrome.fa",
+        decoy= "results/salmon/decoy/decoys.txt",
     output:
         directory("results/salmon/index")
-<<<<<<< HEAD
     priority:1
-=======
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
     log:
         "results/salmon/logs/index.log"
     conda:
         "../envs/salmon.yaml"
     priority:50
-    threads:20
+    threads:24
     shell:
         """
-        salmon index -p {threads} -t {input.fasta} -i {output} --decoys {input.decoy} -k 31 &> {log}
+        salmon index -p {threads} -t {input.gent} -d {input.decoy} -i {output} &> {log}
         """
 
-<<<<<<< HEAD
-rule salmon_quant_mapping:
-=======
-rule salmon_quant:
->>>>>>> 58c7e0000fcb1f754282d482021c355d4887289a
-    input:
-        r1="results/trimmed/{smp}_R1_val_1.fq.gz",
-        r2="results/trimmed/{smp}_R2_val_2.fq.gz",
-        index = "results/salmon/index"
-    output:
-        directory("results/salmon/quant/{smp}_salmon_quant")
-    log:
-		"results/salmon/logs/{smp}.salmon.log"
-    conda:
-        "../envs/salmon.yaml"
-    threads:20
-    shell:
-        """
-        salmon quant -i {input.index} -l A -1 {input.r1} -2 {input.r2} -o {output} --validateMappings --gcBias --seqBias --posBias --writeUnmappedNames -p {threads} --numBootstraps 100
-        """
-    
+if config["salmon_mode"]["mapping_mode"]:
+    rule salmon_quant_mapping:
+        input:
+            r1=GetClean(0),
+            r2=GetClean(1),
+            index = "results/salmon/index"
+        output:
+            directory("results/salmon/quant/{smp}"),
+            mappings="results/salmon/mappings/{smp}_salmon_mappings"
+        log:
+    		"results/salmon/logs/{smp}.salmon.log"
+        conda:
+            "../envs/salmon.yaml"
+        priority:-1
+        threads:24
+        shell:
+            """
+            salmon quant -i {input.index} -l A -1 {input.r1} -2 {input.r2} -o {output} --validateMappings --gcBias --seqBias --writeUnmappedNames --writeMappings={output.mappings} -p {threads} --numBootstraps 100
+            """
+
+if config["salmon_mode"]["alignment_mode"]:
+    rule make_transcript:
+        input:
+            ref= REFERENCE,
+            gtf= rules.gff3_to_gtf.output.gtf
+        output:
+            "results/salmon_align/transcript/arahy_transcripts.fa"
+        conda:
+            "../envs/gffread.yaml"
+        shell:
+            '''
+            gffread -w {output} -g {input.ref} {input.gtf}
+            '''
+
+    rule salmon_quant_alignment:
+        input:
+            bam="results/star/{smp}/Aligned.toTranscriptome.out.bam",
+            tcp = "results/salmon_align/transcript/arahy_transcripts.fa",
+            gtf= rules.gff3_to_gtf.output.gtf,
+        output:
+            directory("results/salmon_align/quant/{smp}_salmon_quant_align")
+        priority:-1
+        log:
+    		"results/salmon_align/logs/{smp}.salmon_align.log"
+        conda:
+            "../envs/salmon.yaml"
+        threads:24
+        shell:
+            '''
+            salmon quant -t {input.tcp} -l A -a {input.bam} -o {output} --gcBias --seqBias --writeUnmappedNames -p {threads} -g {input.gtf} --numBootstraps 100
+            '''
