@@ -15,6 +15,7 @@ A Snakemake workflow to process paired-end RNA-Seq data.
 
 **Future additions:**
 - Differential gene expression analysis (deseq2)
+- Machine learning-based mapping uncertainty analysis (GeneQC)
 
 ![dag](https://user-images.githubusercontent.com/42179487/74106710-ec1f1a80-4b36-11ea-94b2-d52f4bee5574.png)
 
