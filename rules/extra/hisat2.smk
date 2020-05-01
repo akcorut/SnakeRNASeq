@@ -44,8 +44,8 @@ rule hisat2:
         index= expand(
             INDEX_DIR + "/tifrunner.{extension}.ht2",
             extension="1 2 3 4 5 6 7 8".split()),
-        r1= trim_data + "/{smp}_R1_val_1.fq.gz",
-        r2= trim_data + "/{smp}_R2_val_2.fq.gz"
+        r1= "results/trimmed/{smp}_R1_val_1.fq.gz",
+        r2= "results/trimmed/{smp}_R2_val_2.fq.gz"
     output:
         r1 = temp("results/hisat2/{smp}.trimmed.sam")
     params:

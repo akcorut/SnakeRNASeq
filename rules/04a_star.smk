@@ -11,14 +11,14 @@ rule star_index:
     input:
         fasta = REFERENCE
     output:
-        directory("/work/jawlab/kivanc/PeanutRnaSeq/StarIndex")
+        directory(config["ref"]["star_index"])
     threads:15
     priority:50
     params:
         extra = "",
         gtf = rules.gff3_to_gtf.output.gtf
     log:
-        "/work/jawlab/kivanc/PeanutRnaSeq/StarIndex/log/star_index_.log"
+        config["ref"]["star_index"] + "/log/star_index_.log"
     wrapper:
         "0.49.0/bio/star/index"
 
@@ -27,14 +27,14 @@ rule star_pass1:
         fq1=GetClean(0),
         fq2=GetClean(1)
     output:
-        "results/star/pass1/{smp}/Aligned.out.bam",
-        "results/star/pass1/{smp}/SJ.out.tab"
+        "results/04_alignment/04a_alignment_results/star/pass1/{smp}/Aligned.out.bam",
+        "results/04_alignment/04a_alignment_results/star/pass1/{smp}/SJ.out.tab"
     log:
-        "results/star/pass1/logs/{smp}.log"
+        "results/04_alignment/04a_alignment_results/star/pass1/logs/{smp}.log"
     priority:10
     params:
         # path to STAR reference genome index
-        index="/work/jawlab/kivanc/PeanutRnaSeq/StarIndex",
+        index=config["ref"]["star_index"],
         extra="--outSAMtype BAM Unsorted --alignIntronMax 10000 --sjdbGTFfile {}".format(
               rules.gff3_to_gtf.output.gtf)
     threads:20
@@ -43,9 +43,9 @@ rule star_pass1:
 
 rule get_junctions:
     input:
-        expand("results/star/pass1/{smp}/SJ.out.tab", smp=sample_id)
+        expand("results/04_alignment/04a_alignment_results/star/pass1/{smp}/SJ.out.tab", smp=sample_id)
     output:
-        sj="results/star/junctions/SJ.filtered.tab"
+        sj="results/04_alignment/04a_alignment_results/star/junctions/SJ.filtered.tab"
     priority:1
     shell:
         """
@@ -57,15 +57,15 @@ rule star_pass2:
         fq1=GetClean(0),
         fq2=GetClean(1),
     output:
-        "results/star/pass2/{smp}/Aligned.out.bam",
-        "results/star/pass2/{smp}/Aligned.toTranscriptome.out.bam",
-        "results/star/pass2/{smp}/Aligned.sortedByCoord.out.bam",
-        "results/star/pass2/{smp}/ReadsPerGene.out.tab"
+        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.out.bam",
+        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.toTranscriptome.out.bam",
+        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.sortedByCoord.out.bam",
+        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/ReadsPerGene.out.tab"
     log:
-        "results/star/pass2/logs/{smp}.log"
+        "results/04_alignment/04a_alignment_results/star/pass2/logs/{smp}.log"
     params:
         # path to STAR reference genome index
-        index="/work/jawlab/kivanc/PeanutRnaSeq/StarIndex",
+        index=config["ref"]["star_index"],
         extra="--outSAMunmapped Within --outSAMtype BAM SortedByCoordinate Unsorted --quantMode GeneCounts TranscriptomeSAM --alignIntronMax 10000 --sjdbFileChrStartEnd {} --sjdbGTFfile {}".format(
               rules.get_junctions.output.sj, rules.gff3_to_gtf.output.gtf)
     priority:-1

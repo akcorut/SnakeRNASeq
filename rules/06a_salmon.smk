@@ -3,9 +3,9 @@ rule salmon_meta:
         ref= REFERENCE,
         tcp= TRANSCRIPTS
     output:
-        gent= "results/salmon/decoy/gentrome.fa",
-        decoy= "results/salmon/decoy/decoys.txt",
-        bak="results/salmon/decoy/decoys.txt.bak"
+        gent= "results/06_alignment_free/06a_salmon/decoy/gentrome.fa",
+        decoy= "results/06_alignment_free/06a_salmon/decoy/decoys.txt",
+        bak="results/06_alignment_free/06a_salmon/decoy/decoys.txt.bak"
     priority:50
     conda:
         "../envs/salmon.yaml"
@@ -19,13 +19,13 @@ rule salmon_meta:
 
 rule salmon_index:
     input:
-        gent= "results/salmon/decoy/gentrome.fa",
-        decoy= "results/salmon/decoy/decoys.txt",
+        gent= "results/06_alignment_free/06a_salmon/decoy/gentrome.fa",
+        decoy= "results/06_alignment_free/06a_salmon/decoy/decoys.txt",
     output:
-        directory("results/salmon/index")
+        directory("results/06_alignment_free/06a_salmon/index")
     priority:1
     log:
-        "results/salmon/logs/index.log"
+        "results/06_alignment_free/06a_salmon/logs/index.log"
     conda:
         "../envs/salmon.yaml"
     priority:50
@@ -40,12 +40,12 @@ if config["salmon_mode"]["mapping_mode"]:
         input:
             r1=GetClean(0),
             r2=GetClean(1),
-            index = "results/salmon/index"
+            index = "results/06_alignment_free/06a_salmon/index"
         output:
-            directory("results/salmon/quant/{smp}"),
-            mappings="results/salmon/mappings/{smp}_salmon_mappings"
+            directory("results/06_alignment_free/06a_salmon/quant/{smp}"),
+            mappings="results/06_alignment_free/06a_salmon/mappings/{smp}_salmon_mappings"
         log:
-    		"results/salmon/logs/{smp}.salmon.log"
+    		"results/06_alignment_free/06a_salmon/logs/{smp}.salmon.log"
         conda:
             "../envs/salmon.yaml"
         priority:-1
@@ -71,7 +71,7 @@ if config["salmon_mode"]["alignment_mode"]:
 
     rule salmon_quant_alignment:
         input:
-            bam="results/star/{smp}/Aligned.toTranscriptome.out.bam",
+            bam="results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.toTranscriptome.out.bam",
             tcp = "results/salmon_align/transcript/arahy_transcripts.fa",
             gtf= rules.gff3_to_gtf.output.gtf,
         output:
@@ -86,3 +86,24 @@ if config["salmon_mode"]["alignment_mode"]:
             '''
             salmon quant -t {input.tcp} -l A -a {input.bam} -o {output} --gcBias --seqBias --writeUnmappedNames -p {threads} -g {input.gtf} --numBootstraps 100
             '''
+
+rule multiqc_salmon:
+    input:
+        expand("results/06_alignment_free/06a_salmon/quant/{smp}", smp=sample_id)
+    output:
+        "results/06_alignment_free/06a_salmon/salmon_multiqc.html"
+    log:
+        "results/06_alignment_free/06a_salmon/logs/multiqc.log"
+    wrapper:
+        "0.49.0/bio/multiqc"
+
+if config["salmon_mode"]["alignment_mode"]:
+    rule multiqc_salmon_align:
+        input:
+            expand("results/salmon_align/quant/{smp}_salmon_quant_align", smp=sample_id)
+        output:
+            "results/salmon_align/salmon_align_multiqc.html"
+        log:
+            "results/salmon_align/logs/multiqc.log"
+        wrapper:
+            "0.47.0/bio/multiqc"
