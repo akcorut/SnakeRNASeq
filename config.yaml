@@ -3,22 +3,23 @@ ref:
   reference: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.KYV3.genome_main.fa"
   # Reference gene models
   annotation: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.ann1.CCJH.gene_models_main.gff3"
-  # Index of the reference genome
-  index: "/work/jawlab/kivanc/PeanutRnaSeq/reference/hisat2_index"
-  # Exons
-  exon: "/work/jawlab/kivanc/PeanutRnaSeq/reference/exon"
-  # Splice sites
-  ss: "/work/jawlab/kivanc/PeanutRnaSeq/reference/splice"
   
   sj: "/work/jawlab/kivanc/PeanutRnaSeq/reference/SJ.filtered.tab"
 
   transcript: "/work/jawlab/kivanc/PeanutRnaSeq/reference/arahy.Tifrunner.gnm1.ann1.CCJH.transcript.fa"
 
-  reference2: "/work/jawlab/kivanc/PeanutRnaSeq/reference_2/arahy.Tifrunner.gnm2.J5K5.genome_main.fa"
+  reference2: "/work/jawlab/kivanc/PeanutRnaSeq/referenceV2/arahy.Tifrunner.gnm2.J5K5.genome_main.fa"
 
-  transcript2: "/work/jawlab/kivanc/PeanutRnaSeq/reference_2/arahy.Tifrunner.gnm2.ann1.4K0L.transcript.fa"
+  transcript2: "/work/jawlab/kivanc/PeanutRnaSeq/referenceV2/arahy.Tifrunner.gnm2.ann1.4K0L.transcript.fa"
 
-  annotation2: "/work/jawlab/kivanc/PeanutRnaSeq/reference_2/arahy.Tifrunner.gnm2.gene_models.gtf"
+  annotation2: "/work/jawlab/kivanc/PeanutRnaSeq/referenceV2/arahy.Tifrunner.gnm2.gene_models.gtf"
+
+  star_index: "/work/jawlab/kivanc/PeanutRnaSeq/StarIndex"
+
+files:
+  raw: "/work/jawlab/kivanc/PeanutRnaSeq/data/fastq"
+
+  rRNA: "/work/jawlab/kivanc/PeanutRnaSeq/rRNA/rrna.fa"
 
 trimming:
   # skip trimming: false or true
@@ -33,8 +34,16 @@ alignment:
 star:
   activate: true
 
-hisat2:
+featurecounts:
   activate: false
+
+rsem:
+  activate: true
+  rsemindex: results/05_quantification/05a_rsem/rsem_index/tifrunner
+  genes: "results/05_quantification/05a_rsem/genes"
+
+htseq:
+  activate: true
 
 alignment_free:
   activate: true
@@ -44,10 +53,6 @@ kallisto:
 
 salmon:
   activate: true
-
-rsem:
-  rsemindex: results/rsem/rsem_index/tifrunner
-  genes: "results/rsem/genes"
 
 salmon_mode:
   mapping_mode: true
