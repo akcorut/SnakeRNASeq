@@ -1,10 +1,10 @@
 rule sort_bam:
     input:
-        bam= "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.sortedByCoord.out.bam"
+        bam= rules.star_pass2.output.sorted_bam
     output:
         temp("results/04_alignment/04b_alignment_qc/qualimap/SortedBam/{smp}_sorted.bam")
     params:
-        prfx="/work/jawlab/kivanc/tmp/{smp}_sorted"
+        prfx=lambda wildcards, output: output[0][:-4]
     priority:50
     conda:
         "../envs/samtools.yaml"
@@ -17,7 +17,7 @@ rule sort_bam:
 
 rule qualimap:
     input: 
-        sorted_bam= "results/04_alignment/04b_alignment_qc/qualimap/SortedBam/{smp}_sorted.bam"
+        sorted_bam= rules.sort_bam.output
     output: 
         "results/04_alignment/04b_alignment_qc/qualimap/{smp}/qualimapReport.html"
     params:
