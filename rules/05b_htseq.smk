@@ -1,6 +1,6 @@
 rule htseq_count:
     input:
-        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.sortedByCoord.out.bam"
+        rules.star_pass2.output.sorted_bam
     output:
         "results/05_quantification/05b_htseq/{smp}_htseq.cnt"
     conda:
@@ -10,6 +10,7 @@ rule htseq_count:
     log:
         "results/05_quantification/05b_htseq/{smp}_htseq_count.log"
     threads: 24
+    priority:2
     shell:
         """
         htseq-count -m intersection-nonempty --stranded=reverse --idattr gene_id -r pos -f bam {input} {params.gtf} > {output} 2> {log}
@@ -26,6 +27,7 @@ rule htseq_multiqc:
         prefix = lambda wildcards, output: output[0][:-18]
     conda:
         "../envs/multiqc.yaml"
+    priority:1
     shell:
         """
         multiqc -m htseq {params.prefix} --filename {output} 2> {log}
