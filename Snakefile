@@ -2,32 +2,19 @@
 Author: Kivanc Corut
 A Snakemake workflow to process paired end RNA-Seq data.
 """
-import glob
-import os
-import json
-import pandas as pd
-from snakemake.io import expand
-from snakemake.utils import R
-from snakemake.io import glob_wildcards
-import re
-from os.path import join, basename, dirname
-import pathlib
-from os import path
 
-configfile: "config.yaml"
+include: "rules/00_common.smk"
 
-INPUT_DIR = config["files"]["raw"]
-REFERENCE = config["ref"]["reference"]
-ANNOTATION = config["ref"]["annotation"]
-TRANSCRIPTS = config["ref"]["transcript"]
-
-sample_id, run_id = glob_wildcards(INPUT_DIR + "/{smp}_R{run}.fastq.gz")
-#print(sample_id)
-
-meristem_samples = pd.read_csv(config["samples"]["meristem"]).set_index("sample_meristem", drop=False)
-leaf_samples = pd.read_csv(config["samples"]["leaf"]).set_index("sample_leaf", drop=False)
+############################## Target Rules #####################################
 
 ALL_TARGET = []
+
+INIT_QC_R1= expand("results/01_qc/01a_fqc/fqc_init/{smp}_R1_fastqc.html", smp=sample_id)
+INIT_QC_R2= expand("results/01_qc/01a_fqc/fqc_init/{smp}_R2_fastqc.html", smp=sample_id)
+INIT_MQC= expand("results/01_qc/01b_multiqc/multiqc_init/fastq_multiqc.html")
+ALL_TARGET.extend(INIT_QC_R1)
+ALL_TARGET.extend(INIT_QC_R2)
+ALL_TARGET.extend(INIT_MQC)
 
 if not config["trimming"]["skip"]:
     TRIMMED_R1= expand("results/02_trim/{smp}_R1_val_1.fq.gz", smp=sample_id)
@@ -52,7 +39,6 @@ if not config["decontamination"]["skip"]:
     ALL_TARGET.extend(CLEAN_MQC)
 
 if config["alignment"]["activate"]:
-    
     
     STAR_PASS1= expand("results/04_alignment/04a_alignment_results/star/pass1/{smp}/Aligned.out.bam", smp=sample_id)
     STAR_PASS1_SJ= expand("results/04_alignment/04a_alignment_results/star/pass1/{smp}/SJ.out.tab", smp=sample_id)
@@ -98,13 +84,13 @@ if config["alignment_free"]["activate"]:
 
     if config["salmon"]["activate"]:
 
-        if config["salmon_mode"]["mapping_mode"]: 
+        if config["salmon"]["mapping_mode"]: 
             SALMON_QUASI= expand("results/06_alignment_free/06a_salmon/quant/{smp}", smp=sample_id)
             SALMON__QUASI_MQC= expand("results/06_alignment_free/06a_salmon/salmon_multiqc.html")
             ALL_TARGET.extend(SALMON_QUASI)
             ALL_TARGET.extend(SALMON__QUASI_MQC)
 
-        if config["salmon_mode"]["alignment_mode"]:
+        if config["salmon"]["alignment_mode"]:
             SALMON_ALIGN= expand("results/salmon_align/quant/{smp}_salmon_quant_align", smp=sample_id)
             SALMON_ALIGN_MQC=  expand("results/salmon_align/salmon_align_multiqc.html")
             ALL_TARGET.extend(SALMON_ALIGN)
@@ -116,22 +102,18 @@ if config["alignment_free"]["activate"]:
         ALL_TARGET.extend(KALLISTO_QUANT)
         ALL_TARGET.extend(KALLISTO_MQC)
 
-INIT_QC_R1= expand("results/01_qc/01a_fqc/fqc_init/{smp}_R1_fastqc.html", smp=sample_id)
-INIT_QC_R2= expand("results/01_qc/01a_fqc/fqc_init/{smp}_R2_fastqc.html", smp=sample_id)
-INIT_MQC= expand("results/01_qc/01b_multiqc/multiqc_init/fastq_multiqc.html")
-ALL_TARGET.extend(INIT_QC_R1)
-ALL_TARGET.extend(INIT_QC_R2)
-ALL_TARGET.extend(INIT_MQC)
 
 rule all:
     input: ALL_TARGET
 
-include: "rules/00_common.smk"
+############# Modules ################
+
 include: "rules/01a_fastqc.smk"
 include: "rules/01b_multiqc.smk"
 include: "rules/02_trim.smk"
 include: "rules/03a_rrna_check.smk"
 include: "rules/03b_rrna_clean.smk"
+include: "rules/03c_rrna_cleaned_check.smk"
 include: "rules/04a_star.smk"
 include: "rules/04b_rseqc.smk"
 include: "rules/04c_qualimap.smk"
