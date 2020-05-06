@@ -9,7 +9,7 @@ rule rsem_genome:
         ref_name = lambda wildcards, output: output[0][:-11]
     conda:
         "../envs/rsem.yaml"
-    priority:50
+    priority:3
     shell:
         """
         rsem-prepare-reference \
@@ -19,7 +19,7 @@ rule rsem_genome:
 
 rule rsem_calculate:
     input:
-        bam= "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.toTranscriptome.out.bam"
+        bam= rules.star_pass2.output.tcp_bam
     output:
         genes = "results/05_quantification/05a_rsem/genes/{smp}.genes.results",
     params:
@@ -28,7 +28,7 @@ rule rsem_calculate:
     threads: 24
     conda:
         "../envs/rsem.yaml"
-    priority: -10
+    priority:2
     shell:
         """
         rsem-calculate-expression \
@@ -45,5 +45,6 @@ rule multiqc_rsem:
         "results/05_quantification/05a_rsem/rsem_multiqc.html"
     log:
         "results/05_quantification/05a_rsem/logs/multiqc.log"
+    priority:1
     wrapper:
         "0.49.0/bio/multiqc"
