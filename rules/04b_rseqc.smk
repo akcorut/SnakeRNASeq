@@ -4,7 +4,7 @@ rule gtf2bed:
     output:
         bed="results/04_alignment/04b_alignment_qc/rseqc/tifrunner_annotation.bed",
         db=temp("results/04_alignment/04b_alignment_qc/rseqc/tifrunner_annotation.db")
-    priority: 50
+    priority:7
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/gtf2bed.log"
     conda:
@@ -14,11 +14,11 @@ rule gtf2bed:
 
 rule rseqc_junction_annotation:
     input:
-        bam="results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.out.bam",
+        bam=rules.star_pass2.output.bam,
         bed=rules.gtf2bed.output.bed
     output:
         "results/04_alignment/04b_alignment_qc/rseqc/{smp}.junctionanno.junction.bed"
-    priority: 1
+    priority:6
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/rseqc_junction_annotation/{smp}.log"
     params:
@@ -32,10 +32,10 @@ rule rseqc_junction_annotation:
 
 rule rseqc_stat:
     input:
-        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.out.bam"
+        rules.star_pass2.output.bam
     output:
         "results/04_alignment/04b_alignment_qc/rseqc/{smp}.stats.txt"
-    priority: 1
+    priority:5
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/rseqc_stat/{smp}.log"
     conda:
@@ -46,11 +46,11 @@ rule rseqc_stat:
         
 rule rseqc_infer:
     input:
-        bam="results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.out.bam",
+        bam=rules.star_pass2.output.bam,
         bed=rules.gtf2bed.output.bed
     output:
         "results/04_alignment/04b_alignment_qc/rseqc/{smp}.infer_experiment.txt"
-    priority: 1
+    priority:4
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/rseqc_infer/{smp}.log"
     conda:
@@ -60,11 +60,11 @@ rule rseqc_infer:
 
 rule rseqc_readdis:
     input:
-        bam="results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.out.bam",
+        bam=rules.star_pass2.output.bam,
         bed=rules.gtf2bed.output.bed
     output:
         "results/04_alignment/04b_alignment_qc/rseqc/{smp}.readdistribution.txt"
-    priority: 1
+    priority:3
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/rseqc_readdis/{smp}.log"
     conda:
@@ -74,10 +74,10 @@ rule rseqc_readdis:
         
 rule rseqc_readgc:
     input:
-        "results/04_alignment/04a_alignment_results/star/pass2/{smp}/Aligned.out.bam"
+        rules.star_pass2.output.bam
     output:
         "results/04_alignment/04b_alignment_qc/rseqc/{smp}.readgc.GC.xls"
-    priority: 1
+    priority:2
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/rseqc_readgc/{smp}.log"
     params:
@@ -118,6 +118,7 @@ rule multiqc_rseqc:
         expand("results/04_alignment/04a_alignment_results/star/pass2/{smp}/Log.final.out", smp=sample_id)
     output:
         "results/04_alignment/04b_alignment_qc/rseqc/rseqc_multiqc_report.html"
+    priority:1
     log:
         "results/04_alignment/04b_alignment_qc/rseqc/logs/multiqc.log"
     wrapper:
