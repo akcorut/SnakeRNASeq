@@ -46,7 +46,6 @@ def GetClean(num):
     trim2="results/02_trim/{smp}_R2_val_2.fq.gz"
     if config["decontamination"]["skip"]:
         sample_list = [trim1,trim2]
-        return sample_list[num];
     else:
         sample_list = [clean1, clean2]
-        return sample_list[num]
+    return sample_list[num]
